@@ -1,4 +1,4 @@
-# Bisection_method-in-phyton
+# False_position_method-in-phyton
 Here's the Python code that uses the False Position (Regula Falsi) method to find the root of the equation f(x) = x^2 - 6x + 5 = 0 and records each iteration in a table:
 
 ```python
