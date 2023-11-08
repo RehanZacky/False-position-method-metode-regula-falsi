@@ -1,57 +1,57 @@
 # Bisection_method-in-phyton
-You can use the bisection method to find the root of the equation x^4 - x^3 + 2x^2 - 2x - 12 = 0
-in the interval [-2, 0] with a tolerance of 0.0001. Here's the implementation in Python:
+Here's the Python code that uses the False Position (Regula Falsi) method to find the root of the equation f(x) = x^2 - 6x + 5 = 0 and records each iteration in a table:
 
 ```python
-def bisection_method(f, a, b, tolerance, max_iterations=100):
-    if f(a) * f(b) >= 0:
-        raise ValueError("The signs of f(a) and f(b) must be different.")
-    
+def f(x):
+    return x**2 - 6*x + 5
+
+def false_position(a, b, tol, max_iterations):
     iteration = 0
-    while (b - a) / 2.0 > tolerance and iteration < max_iterations:
-        c = (a + b) / 2.0
-        if f(c) == 0:
-            return round(c, 4)  # Using round() to limit decimal places
-        elif f(a) * f(c) < 0:
+    results = []
+
+    while iteration < max_iterations:
+        c = (a * f(b) - b * f(a)) / (f(b) - f(a))
+        f_c = f(c)
+        results.append((iteration + 1, a, b, c, f(a), f(b), f_c))
+
+        if f_c == 0 or (b - a) < tol:
+            break
+        elif f_c * f(a) < 0:
             b = c
         else:
             a = c
+
         iteration += 1
-        print(f"Iteration {iteration}: a = {a:.4f}, b = {b:.4f}, c = {c:.4f}, f(c) = {f(c):.6f}")
-    
-    return round((a + b) / 2.0, 4)
 
-# Function for the equation x^4 - x^3 + 2x^2 - 2x - 12
-def equation(x):
-    return x**4 - x**3 + 2*x**2 - 2*x - 12
+    return c, results
 
-a = -2.0
-b = 0.0
-tolerance = 0.0001
+a = 3.0
+b = 6.0
+tolerance = 0.001  # Tolerance to 3 decimal places
+max_iterations = 7  # Maximum number of iterations
 
-root = bisection_method(equation, a, b, tolerance)
-print("Root of the equation: {:.4f}".format(root))
+root, table = false_position(a, b, tolerance, max_iterations)
+
+print("| Iteration |   a   |   b   |   c   |  f(a)  |  f(b) |  f(c)  |")
+print("|-----------|-------|-------|-------|--------|-------|--------|")
+for row in table:
+    print("|     {}     | {:.3f} | {:.3f} | {:.3f} | {:.3f} | {:.3f} | {:.3f} |".format(*row))
+
+print("\nRoot of the equation: {:.3f}".format(root))
 ```
 Output:
 ```
-Iteration 1: a = -2.0000, b = -1.0000, c = -1.0000, f(c) = -6.000000
-Iteration 2: a = -1.5000, b = -1.0000, c = -1.5000, f(c) = 3.937500
-Iteration 3: a = -1.5000, b = -1.2500, c = -1.2500, f(c) = -1.980469
-Iteration 4: a = -1.3750, b = -1.2500, c = -1.3750, f(c) = 0.705322
-Iteration 5: a = -1.3750, b = -1.3125, c = -1.3125, f(c) = -0.701157
-Iteration 6: a = -1.3750, b = -1.3438, c = -1.3438, f(c) = -0.014388
-Iteration 7: a = -1.3594, b = -1.3438, c = -1.3594, f(c) = 0.341276
-Iteration 8: a = -1.3516, b = -1.3438, c = -1.3516, f(c) = 0.162406
-Iteration 9: a = -1.3477, b = -1.3438, c = -1.3477, f(c) = 0.073750
-Iteration 10: a = -1.3457, b = -1.3438, c = -1.3457, f(c) = 0.029617
-Iteration 11: a = -1.3447, b = -1.3438, c = -1.3447, f(c) = 0.007598
-Iteration 12: a = -1.3447, b = -1.3442, c = -1.3442, f(c) = -0.003399
-Iteration 13: a = -1.3445, b = -1.3442, c = -1.3445, f(c) = 0.002099
-Iteration 14: a = -1.3445, b = -1.3444, c = -1.3444, f(c) = -0.000650
-Root of the equation: -1.3444
+| Iteration |   a   |   b   |   c   |  f(a)  |  f(b) |  f(c)  |
+|-----------|-------|-------|-------|--------|-------|--------|
+|     1     | 3.000 | 6.000 | 4.333 | -4.000 | 5.000 | -2.222 |
+|     2     | 4.333 | 6.000 | 4.846 | -2.222 | 5.000 | -0.592 |
+|     3     | 4.846 | 6.000 | 4.968 | -0.592 | 5.000 | -0.126 |
+|     4     | 4.968 | 6.000 | 4.994 | -0.126 | 5.000 | -0.026 |
+|     5     | 4.994 | 6.000 | 4.999 | -0.026 | 5.000 | -0.005 |
+|     6     | 4.999 | 6.000 | 5.000 | -0.005 | 5.000 | -0.001 |
+|     7     | 5.000 | 6.000 | 5.000 | -0.001 | 5.000 | -0.000 |
+
+Root of the equation: 5.000
+
 ```
-In the code above, we use the equation function to compute the value of the equation x^4 - x^3 + 2x^2 - 2x - 12
-Then, we call the bisection_method with the interval [-2, 0] and a tolerance of 0.0001 to find the root of the equation. 
-The root that is found is rounded to 4 decimal places as per the requested precision. 
-Additionally, we have set a maximum iteration limit of 100 to ensure that the iteration stops 
-if a solution is not found after a sufficiently large number of iterations.
+In this code, we use the False Position method to find the root of the equation and record each iteration in a table that includes Iteration, a, b, c, and f(c).
